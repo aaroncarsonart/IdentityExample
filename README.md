@@ -2,9 +2,15 @@ IdentityExample
 ===============
 An example of how to use the ASP.NET MVC 5 EF 6 Identity property properly.
 
+Important Links
+===============
 This is all based on the tutorial available here:
 
 http://blogs.msdn.com/b/webdev/archive/2013/10/20/building-a-simple-todo-application-with-asp-net-identity-and-associating-users-with-todoes.aspx
+
+You can view the working website here:
+
+http://identityexample.azurewebsites.net/
 
 Short Tutorial
 ==============
