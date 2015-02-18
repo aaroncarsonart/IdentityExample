@@ -8,19 +8,20 @@ http://blogs.msdn.com/b/webdev/archive/2013/10/20/building-a-simple-todo-applica
 
 Short Tutorial
 ==============
-All of this information is located in the above linked tutorial, but it requires some digging to get through. I've reproduced a shortened version that relates to this specific project. For more in-depth information, please go read through their full tutorial. Please note that you will need to add additional `using` statements at the top of the various files that we are creating/editing. They will not be mentioned here, but Visual Studio will correct these issues if you right click the section of code that is having issues.
+All of this information is located in the above linked tutorial, but it requires some digging to get through. I've reproduced a shortened version that relates to this specific project. It should be enough to get you going. For more in-depth information, please go read through their full tutorial. 
+
+Please note that you will need to add additional `using` statements at the top of the various files that we are creating/editing. They will not be mentioned here, but Visual Studio will correct these issues if you right click the section of code that is having issues.
 
 1. Create your desired model. In this project, my model's name is Review. In your model field definitions (`IdentityExample/Models/Review.cs`), add the following code:
 
   `public virtual ApplicationUser User { get; set; }`
-2. Go to the Identity model `(IdentityExample/Models/IdentityModel.cs)` and add the following code just below the `GenerateUserIdentityAsync` method:
+2. Go to the Identity model (`IdentityExample/Models/IdentityModel.cs`) and add the following code just below the `GenerateUserIdentityAsync` method:
 
   `public virtual ICollection<Review> review { get; set; }`
   
   Make sure that you replace the Review model here with the actual model name you are using in your project.
 3. Add a model controller to your project's `Controllers` folder. Choose ApplicationDBContext as your database in the dialog box that pops up and select the model that we're working with.
 4. Now we're going to add some code that integrates the identity model. Just above the controller declaration (`public class ReviewsController : Controller {` in this case), add the following code:
-
   ```
   private ApplicationDbContext db;
   private UserManager<ApplicationUser> manager;
@@ -31,12 +32,12 @@ All of this information is located in the above linked tutorial, but it requires
     manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
   }
   ```
-5. At this point, the program is ready to go with the identity stuff. We need to change the controller so that it adds the user ID to the Review (or whatever your model name is) table. In the create section of the controller (`public async Task<ActionResult> Create([Bind(Include = "ReviewID,Content,ReviewDate,Score")] Review review) {`), add `var currentUser = manager.FindById(User.Identity.GetUserId());` just above the `if (ModelState.IsValid) {` statement. Within that same statement, add `review.User = manager.FindById(User.Identity.GetUserId());` just above the rest of the code in that statement. The resulting code should look something like the following:
+5. At this point, the program is ready to go with the identity stuff. We need to change the controller so that it adds the user ID to the Review (or whatever your model name is) table. In the create section of the controller, add `var currentUser = manager.FindById(User.Identity.GetUserId());` just above the if statement. Within that same statement, add `review.User = manager.FindById(User.Identity.GetUserId());` just above the rest of the code in that statement. The resulting code should look something like the following:
   ```
   public async Task<ActionResult> Create([Bind(Include = "ReviewID,Content,ReviewDate,Score")] Review review)
   {
     var currentUser = manager.FindById(User.Identity.GetUserId());
-            
+  
     if (ModelState.IsValid)
     {
       review.User = manager.FindById(User.Identity.GetUserId());
@@ -44,7 +45,7 @@ All of this information is located in the above linked tutorial, but it requires
       await db.SaveChangesAsync();
       return RedirectToAction("Index");
     }
-
+  
     return View(review);
   }
   ```
