@@ -28,7 +28,7 @@ Please note that you will need to add additional `using` statements at the top o
   Make sure that you replace the Review model here with the actual model name you are using in your project.
 3. Add a model controller to your project's `Controllers` folder. Choose ApplicationDBContext as your database in the dialog box that pops up and select the model that we're working with.
 4. Now we're going to add some code that integrates the identity model. Just above the controller declaration (`public class ReviewsController : Controller {` in this case), add the following code:
-  ```
+  ```cs
   private ApplicationDbContext db;
   private UserManager<ApplicationUser> manager;
 
@@ -39,7 +39,7 @@ Please note that you will need to add additional `using` statements at the top o
   }
   ```
 5. At this point, the program is ready to go with the identity stuff. We need to change the controller so that it adds the user ID to the Review (or whatever your model name is) table. In the create section of the controller, add `var currentUser = manager.FindById(User.Identity.GetUserId());` just above the if statement. Within that same statement, add `review.User = manager.FindById(User.Identity.GetUserId());` just above the rest of the code in that statement. The resulting code should look something like the following:
-  ```
+  ```cs
   public async Task<ActionResult> Create([Bind(Include = "ReviewID,Content,ReviewDate,Score")] Review review)
   {
     var currentUser = manager.FindById(User.Identity.GetUserId());
